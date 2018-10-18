@@ -110,6 +110,7 @@ class Fighter extends Humanoid {
 
 // Hero class, inherits from Fighter
 
+
 class Hero extends Fighter {
 
   constructor(obj) {
@@ -117,6 +118,9 @@ class Hero extends Fighter {
     super(obj);
 
   }
+
+  
+  
 
   // Attacks opponent. Same as Fighter attack function overridden with input.
 
@@ -156,6 +160,18 @@ class Hero extends Fighter {
   }
 
 }
+
+// weapon constructor function------------
+class weapon{
+    constructor(obj){
+      this.basedmg = obj.dmg;
+      this.maxDmg = obj.maxDmg;
+      this.minDmg = obj.minDmg;
+      this.weaponType = obj.weaponType;
+      this.weapTier = obj.weaponTier;
+      this.uses = obj.uses;
+    }
+  }
 
 /* ====================== GAME FUNCTIONS ============================ */
 
@@ -284,6 +300,7 @@ function battle(hero, villian) {
   }
 
 }
+
 
 /* ====================== THE GAME ============================ */
 
