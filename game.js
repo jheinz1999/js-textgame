@@ -19,7 +19,7 @@ class GameObject {
 
   destroy() {
 
-    console.log(`${this.name} was removed from the game.`);
+    io.output(`${this.name} was removed from the game.`);
 
   }
 
@@ -41,9 +41,9 @@ class Entity extends GameObject {
 
   takeDamage(damage) {
 
-     console.log(`${this.name} took damage.`);
+     io.output(`${this.name} took damage.`);
      this.hp -= damage;
-     console.log(`${this.name}'s current HP: ${this.hp}`);
+     io.output(`${this.name}'s current HP: ${this.hp}`);
 
      return this.hp <= 0;
 
@@ -68,7 +68,7 @@ class Humanoid extends Entity {
 
   greet() {
 
-    console.log(`${this.name} offers a greeting in ${this.language}`);
+    io.output(`${this.name} offers a greeting in ${this.language}`);
 
   }
 
@@ -122,11 +122,11 @@ class Hero extends Fighter {
 
   attack(opponent) {
 
-    console.log("Choose your weapon by entering in the number of the weapon:");
+    io.output("Choose your weapon by entering in the number of the weapon:");
 
     for (let i = 0; i < this.weapons.length; i++) {
 
-      console.log(`[${i}] ${this.weapons[i].name} (remaining uses: ${this.weapons[i].uses})`);
+      io.output(`[${i}] ${this.weapons[i].name} (remaining uses: ${this.weapons[i].uses})`);
 
     }
 
@@ -134,7 +134,7 @@ class Hero extends Fighter {
 
     while (chosenWeapon == -1 || isNaN(chosenWeapon) || chosenWeapon > this.weapons.length - 1) {
 
-      chosenWeapon = readline.question("Weapon: ");
+      chosenWeapon = io.input("Weapon: ");
 
     }
 
@@ -149,13 +149,54 @@ class Hero extends Fighter {
 
     }
 
-    console.log();
+    io.output("");
 
     return opponent.takeDamage(damage);
 
   }
 
 }
+
+// IO class, used for processing IO
+
+class IO {
+
+  constructor(ioType) {
+
+    this.ioType = ioType;
+
+  }
+
+  // io.outputs a string
+  output(str) {
+
+    if (this.ioType == "console")
+      console.log(str);
+
+    else {
+
+      // Put io.output to DOM code here
+
+    }
+
+  }
+
+  input(str) {
+
+    if (this.ioType == "console")
+      return readline.question(str);
+
+    else {
+
+      // put input from DOM here
+
+    }
+
+  }
+
+}
+
+let io = new IO("console");
 
 /* ====================== GAME FUNCTIONS ============================ */
 
@@ -165,24 +206,24 @@ function createCharacter() {
 
   const characterClasses = ["Elf", "Human", "Orc"];
 
-  let heroName = readline.question("What will your hero's name be? ");
+  let heroName = io.input("What will your hero's name be? ");
 
   let characterClass = -1;
   let heroFaction = "undefined";
   let heroLanguage = "undefined";
 
-  console.log(`\nThere are ${characterClasses.length} classes available to you as an adventurer.`);
-  console.log("You may choose one of the following:\n");
+  io.output(`\nThere are ${characterClasses.length} classes available to you as an adventurer.`);
+  io.output("You may choose one of the following:\n");
 
   for (let i = 0; i < characterClasses.length; i++) {
 
-    console.log(`[${i}]: ${characterClasses[i]}`);
+    io.output(`[${i}]: ${characterClasses[i]}`);
 
   }
 
   while (characterClass == -1 || isNaN(characterClass) || characterClass > characterClasses.length - 1) {
 
-    characterClass = readline.question("\nWhich class do you choose? ");
+    characterClass = io.input("\nWhich class do you choose? ");
 
   }
 
@@ -205,7 +246,7 @@ function createCharacter() {
 
   }
 
-  console.log(`Welcome to the ${heroFaction}, ${heroName}.\n`);
+  io.output(`Welcome to the ${heroFaction}, ${heroName}.\n`);
 
   return new Hero({
     createdAt: new Date(),
@@ -231,7 +272,7 @@ function createCharacter() {
 function battle(hero, villian) {
 
   // Introductions
-  console.log();
+  io.output("");
   hero.greet();
   villian.greet();
 
@@ -242,10 +283,10 @@ function battle(hero, villian) {
   // Game loop
   while (battling) {
 
-    console.log();
-    console.log(`Your HP: ${hero.hp}`);
-    console.log(`Enemy HP: ${villian.hp}`);
-    console.log();
+    io.output("");
+    io.output(`Your HP: ${hero.hp}`);
+    io.output(`Enemy HP: ${villian.hp}`);
+    io.output("");
 
     if (turn === 1) { // Hero's turn
 
@@ -254,7 +295,7 @@ function battle(hero, villian) {
       if (victory) {
 
         villian.destroy();
-        console.log(`${hero.name} has won!\n`);
+        io.output(`${hero.name} has won!\n`);
         battling = false;
         return true;
 
@@ -271,7 +312,7 @@ function battle(hero, villian) {
       if (victory) {
 
         hero.destroy();
-        console.log(`${villian.name} has won!\n`);
+        io.output(`${villian.name} has won!\n`);
         battling = false;
         return false;
 
@@ -287,11 +328,11 @@ function battle(hero, villian) {
 
 /* ====================== THE GAME ============================ */
 
-console.log("Welcome to my game. Please create a character.\n");
+io.output("Welcome to my game. Please create a character.\n");
 
 const hero = createCharacter();
 
-console.log("Fight until you die!");
+io.output("Fight until you die!");
 
 let numVictories = 0;
 let fighting = true;
@@ -320,7 +361,7 @@ while (fighting) {
   if (fighting) {
 
     numVictories++;
-    console.log(`Great work, ${hero.name}! Your HP has been restored by ${20 + Math.floor(numVictories / 2) * 30} points. Now onto the next villian!`);
+    io.output(`Great work, ${hero.name}! Your HP has been restored by ${20 + Math.floor(numVictories / 2) * 30} points. Now onto the next villian!`);
     hero.hp += 20 + Math.floor(numVictories / 3) * 4;
     hero.weapons[0].uses += 5;
 
@@ -331,4 +372,4 @@ while (fighting) {
 
 }
 
-console.log(`Great job, ${hero.name}. You have successfully slain ${numVictories} villians.`);
+io.output(`Great job, ${hero.name}. You have successfully slain ${numVictories} villians.`);
