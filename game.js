@@ -267,6 +267,7 @@ class IO {
     else {
 
       document.querySelector(".container .console .output").innerHTML += str + '<br>';
+      document.querySelector(".container .console .output").scrollTop = document.querySelector(".container .console .output").scrollHeight;
 
     }
 
