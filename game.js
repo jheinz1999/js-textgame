@@ -1,7 +1,7 @@
 // Game.js - Main game file
 
 // Allows reading from console in node.js
-const readline = require('readline-sync');
+//const readline = require('readline-sync');
 
 // GameObject class - represents all Game Objects.
 
@@ -215,25 +215,31 @@ class Hero extends Fighter {
 
   // Chooses a weapon. Set up for input.
 
-  chooseWeapon() {
+  async chooseWeapon() {
 
-    io.output("Choose your weapon by entering in the number of the weapon:");
+    let me = this;
 
-    for (let i = 0; i < this.weapons.length; i++) {
+    return new Promise(async function(success) {
 
-      io.output(`[${i}] ${this.weapons[i].name} (remaining uses: ${this.weapons[i].uses})`);
+      io.output("Choose your weapon by entering in the number of the weapon:");
 
-    }
+      for (let i = 0; i < me.weapons.length; i++) {
 
-    let chosenWeapon = -1;
+        io.output(`[${i}] ${me.weapons[i].name} (remaining uses: ${me.weapons[i].uses})`);
 
-    while (chosenWeapon == -1 || isNaN(chosenWeapon) || chosenWeapon > this.weapons.length - 1) {
+      }
 
-      chosenWeapon = io.input("Weapon: ");
+      let chosenWeapon = -1;
 
-    }
+      while (chosenWeapon == -1 || isNaN(chosenWeapon) || chosenWeapon > me.weapons.length - 1) {
 
-    return chosenWeapon;
+        chosenWeapon = await io.input("Weapon: ");
+
+      }
+
+      success(chosenWeapon);
+
+    });
 
   }
 
@@ -246,6 +252,9 @@ class IO {
   constructor(ioType) {
 
     this.ioType = ioType;
+    this.keyInput = document.querySelector(".container .console .input");
+    this.keyOutput = document.querySelector(".container .console .output");
+    this.done = true;
 
   }
 
@@ -257,20 +266,53 @@ class IO {
 
     else {
 
-      // Put io.output to DOM code here
+      document.querySelector(".container .console .output").innerHTML += str + '<br>';
+      document.querySelector(".container .console .output").scrollTop = document.querySelector(".container .console .output").scrollHeight;
 
     }
 
   }
 
-  input(str) {
+  async input(str, input) {
+
+    this.done = false;
 
     if (this.ioType == "console")
       return readline.question(str);
 
     else {
 
-      // put input from DOM here
+      this.output(str);
+
+      return new Promise(resolve => {
+
+        let done = false;
+
+        window.addEventListener("keydown", getInput);
+
+        let me = this;
+
+        function getInput(keys) {
+
+          if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \n".includes(keys.key))
+            me.keyInput.innerHTML += keys.key;
+
+          if (keys.code === "Backspace") me.keyInput.innerHTML = "";
+
+          if (keys.code === "Space") me.keyInput.innerHTML += "&nbsp";
+
+          if (keys.code === "Enter") {
+            done = true;
+            me.done = true;
+            input = me.keyInput.innerHTML;
+            me.keyInput.innerHTML = "";
+            window.removeEventListener("keydown", getInput);
+            resolve(input);
+          }
+
+        }
+
+      });
 
     }
 
@@ -278,80 +320,86 @@ class IO {
 
 }
 
-let io = new IO("console");
+let start = true;
+
+let io = new IO("window");
 
 /* ====================== GAME FUNCTIONS ============================ */
 
 // Returns a new character
 
-function createCharacter() {
+async function createCharacter() {
 
-  const characterClasses = ["Elf", "Human", "Orc"];
+  return new Promise(async function(success) {
 
-  let heroName = io.input("What will your hero's name be? ");
+    const characterClasses = ["Elf", "Human", "Orc"];
 
-  let characterClass = -1;
-  let heroFaction = "undefined";
-  let heroLanguage = "undefined";
+    let heroName = await io.input("What will your hero's name be? ");
 
-  io.output(`\nThere are ${characterClasses.length} classes available to you as an adventurer.`);
-  io.output("You may choose one of the following:\n");
+    let characterClass = -1;
+    let heroFaction = "undefined";
+    let heroLanguage = "undefined";
 
-  for (let i = 0; i < characterClasses.length; i++) {
+    io.output(`\nThere are ${characterClasses.length} classes available to you as an adventurer.`);
+    io.output("You may choose one of the following:\n");
 
-    io.output(`[${i}]: ${characterClasses[i]}`);
+    for (let i = 0; i < characterClasses.length; i++) {
 
-  }
+      io.output(`[${i}]: ${characterClasses[i]}`);
 
-  while (characterClass == -1 || isNaN(characterClass) || characterClass > characterClasses.length - 1) {
+    }
 
-    characterClass = io.input("\nWhich class do you choose? ");
+    while (characterClass == -1 || isNaN(characterClass) || characterClass > characterClasses.length - 1) {
 
-  }
+      characterClass = await io.input("\nWhich class do you choose? ");
 
-  characterClass = Number.parseInt(characterClass);
+    }
 
-  switch (characterClass) {
+    characterClass = Number.parseInt(characterClass);
 
-    case 0: // Elf
-      heroFaction = "Elven Clan";
-      heroLanguage = "Elvish";
-      break;
-    case 1:
-      heroFaction = "Human Clan";
-      heroLanguage = "English";
-      break;
-    case 2:
-      heroFaction = "Orc Clan";
-      heroLanguage = "Oricsh";
-      break;
+    switch (characterClass) {
 
-  }
+      case 0: // Elf
+        heroFaction = "Elven Clan";
+        heroLanguage = "Elvish";
+        break;
+      case 1:
+        heroFaction = "Human Clan";
+        heroLanguage = "English";
+        break;
+      case 2:
+        heroFaction = "Orc Clan";
+        heroLanguage = "Oricsh";
+        break;
 
-  io.output(`Welcome to the ${heroFaction}, ${heroName}.\n`);
+    }
 
-  return new Hero({
-    createdAt: new Date(),
-    dimensions: {
-      length: 1,
-      width: 2,
-      height: 4,
-    },
-    hp: 100,
-    name: heroName,
-    faction: heroFaction,
-    weapons: [
-      {name: "Dagger", maxDamage: 20, uses: 25},
-      {name: "Sword", maxDamage: 75, uses: 5}
-    ],
-    language: heroLanguage,
+    io.output(`Welcome to the ${heroFaction}, ${heroName}.\n`);
+
+    return success(new Hero({
+      createdAt: new Date(),
+      dimensions: {
+        length: 1,
+        width: 2,
+        height: 4,
+      },
+      hp: 100,
+      name: heroName,
+      faction: heroFaction,
+      weapons: [
+        {name: "Dagger", maxDamage: 20, uses: 25},
+        {name: "Sword", maxDamage: 75, uses: 5}
+      ],
+      language: heroLanguage,
+    }));
+
   });
 
 }
 
 // Battle function. returns whether hero won or not.
 
-function battle(hero, villian) {
+async function battle(hero, villian) {
 
   // Introductions
   io.output("");
@@ -374,7 +422,7 @@ function battle(hero, villian) {
 
       let victory = false;
 
-      let weapon = hero.chooseWeapon();
+      let weapon = await hero.chooseWeapon();
 
       victory = hero.attack(villian, weapon);
 
@@ -418,48 +466,54 @@ function battle(hero, villian) {
 
 /* ====================== THE GAME ============================ */
 
-io.output("Welcome to my game. Please create a character.\n");
+async function game() {
 
-const hero = createCharacter();
+  io.output("Welcome to my game. Please create a character.\n");
 
-io.output("Fight until you die!");
+  const hero = await createCharacter();
 
-let numVictories = 0;
-let fighting = true;
+  io.output("Fight until you die!");
 
-while (fighting) {
+  let numVictories = 0;
+  let fighting = true;
 
-  let myVillian = new Villian({
-    createdAt: new Date(),
-    dimensions: {
-      length: 1,
-      width: 2,
-      height: 4,
-    },
-    hp: 75 + numVictories * 5,
-    name: 'Evil Villian',
-    faction: 'Mountain Kingdom',
-    weapons: [
-      {name: "Dagger", maxDamage: 20, uses: 25},
-      {name: "Sword", maxDamage: 30, uses: 2}
-    ],
-    language: 'Pig Latin',
-  });
+  while (fighting) {
 
-  fighting = battle(hero, myVillian);
+    let myVillian = new Villian({
+      createdAt: new Date(),
+      dimensions: {
+        length: 1,
+        width: 2,
+        height: 4,
+      },
+      hp: 75 + numVictories * 5,
+      name: 'Evil Villian',
+      faction: 'Mountain Kingdom',
+      weapons: [
+        {name: "Dagger", maxDamage: 20, uses: 25},
+        {name: "Sword", maxDamage: 30, uses: 2}
+      ],
+      language: 'Pig Latin',
+    });
 
-  if (fighting) {
+    fighting = await battle(hero, myVillian);
 
-    numVictories++;
-    io.output(`Great work, ${hero.name}! Your HP has been restored by ${20 + Math.floor(numVictories / 2) * 30} points. Now onto the next villian!`);
-    hero.hp += 20 + Math.floor(numVictories / 3) * 4;
-    hero.weapons[0].uses += 5;
+    if (fighting) {
 
-    if (numVictories % 3 == 0)
-      hero.weapons[1].uses += 10;
+      numVictories++;
+      io.output(`Great work, ${hero.name}! Your HP has been restored by ${20 + Math.floor(numVictories / 2) * 30} points. Now onto the next villian!`);
+      hero.hp += 20 + Math.floor(numVictories / 3) * 4;
+      hero.weapons[0].uses += 5;
+
+      if (numVictories % 3 == 0)
+        hero.weapons[1].uses += 10;
+
+    }
 
   }
 
+  io.output(`Great job, ${hero.name}. You have successfully slain ${numVictories} villians.`);
+
 }
 
-io.output(`Great job, ${hero.name}. You have successfully slain ${numVictories} villians.`);
+game();
