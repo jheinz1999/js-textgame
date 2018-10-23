@@ -1,7 +1,7 @@
 // Game.js - Main game file
 
 // Allows reading from console in node.js
-const readline = require('readline-sync');
+//const readline = require('readline-sync');
 
 // GameObject class - represents all Game Objects.
 
@@ -246,6 +246,9 @@ class IO {
   constructor(ioType) {
 
     this.ioType = ioType;
+    this.keyInput = document.querySelector(".container .console .input");
+    this.keyOutput = document.querySelector(".container .console .output");
+    this.done = true;
 
   }
 
@@ -257,20 +260,52 @@ class IO {
 
     else {
 
-      // Put io.output to DOM code here
+      document.querySelector(".container .console .output").innerHTML += str + '<br>';
 
     }
 
   }
 
-  input(str) {
+  async input(str, input) {
+
+    this.done = false;
 
     if (this.ioType == "console")
       return readline.question(str);
 
     else {
 
-      // put input from DOM here
+      this.output(str);
+
+      return new Promise(resolve => {
+
+        let done = false;
+
+        window.addEventListener("keydown", getInput);
+
+        let me = this;
+
+        function getInput(keys) {
+
+          if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \n".includes(keys.key))
+            me.keyInput.innerHTML += keys.key;
+
+          if (keys.code === "Backspace") me.keyInput.innerHTML = "";
+
+          if (keys.code === "Space") me.keyInput.innerHTML += "&nbsp";
+
+          if (keys.code === "Enter") {
+            done = true;
+            me.done = true;
+            input = me.keyInput.innerHTML;
+            me.keyInput.innerHTML = "";
+            window.removeEventListener("keydown", getInput);
+            resolve(input);
+          }
+
+        }
+
+      });
 
     }
 
@@ -278,21 +313,25 @@ class IO {
 
 }
 
-let io = new IO("console");
+let start = true;
+
+let io = new IO("window");
 
 /* ====================== GAME FUNCTIONS ============================ */
 
 // Returns a new character
 
-function createCharacter() {
+async function createCharacter() {
 
   const characterClasses = ["Elf", "Human", "Orc"];
 
-  let heroName = io.input("What will your hero's name be? ");
+  let heroName = await io.input("What will your hero's name be? ");
 
   let characterClass = -1;
   let heroFaction = "undefined";
   let heroLanguage = "undefined";
+
+  if (io.done) {
 
   io.output(`\nThere are ${characterClasses.length} classes available to you as an adventurer.`);
   io.output("You may choose one of the following:\n");
@@ -305,7 +344,7 @@ function createCharacter() {
 
   while (characterClass == -1 || isNaN(characterClass) || characterClass > characterClasses.length - 1) {
 
-    characterClass = io.input("\nWhich class do you choose? ");
+    characterClass = await io.input("\nWhich class do you choose? ");
 
   }
 
@@ -346,6 +385,8 @@ function createCharacter() {
     ],
     language: heroLanguage,
   });
+
+}
 
 }
 
@@ -422,7 +463,7 @@ io.output("Welcome to my game. Please create a character.\n");
 
 const hero = createCharacter();
 
-io.output("Fight until you die!");
+/*io.output("Fight until you die!");
 
 let numVictories = 0;
 let fighting = true;
@@ -462,4 +503,4 @@ while (fighting) {
 
 }
 
-io.output(`Great job, ${hero.name}. You have successfully slain ${numVictories} villians.`);
+io.output(`Great job, ${hero.name}. You have successfully slain ${numVictories} villians.`);*/

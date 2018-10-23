@@ -1,0 +1,295 @@
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  width: 98vw;
+  height: 98vh;
+  background-color: grey;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+.container .console {
+  width: 75%;
+  border: 10px solid #ece6e6;
+  background-color: rgb(56, 56, 56);
+  height: 44.7%;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  color: white;
+  font-size: 40px;
+  font-family: 'VT323', monospace;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.vsBattle .vs {
+  position: absolute;
+  top: 25%;
+  right: 48.5%;
+  font-size: 50px;
+  z-index: 5;
+}
+
+.vsBattle .health-bar {
+  width: 350px;
+  height: 35px;
+  background-color: red;
+  border: 4px solid lightgrey;
+  border-radius: .5em;
+}
+
+.container .vsBattle {
+  background-color: green;
+  width: 95%;
+  height: 45%;
+  display: flex;
+}
+
+.vsBattle .hero {
+  width: 50%;
+  height: 100%;
+  background-color: #a0a0df;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-direction: column;
+  padding: 20px;
+}
+.vsBattle .villian {
+  width: 50%;
+  height: 100%;
+  background-color: #c2a0a0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  flex-direction: column;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.villian .health-bar .alive {
+  width: 100%;
+  height: 100%;
+  background-color: #09c009;
+}
+
+.hero .health-bar .alive {
+  width: 100%;
+  height: 100%;
+  background-color: #09c009;
+  overflow: hidden;
+}
+
+.vsBattle .icon {
+  width: 200px;
+  height: 300px;
+  background-color: yellowgreen;
+  margin: 20px 120px;
+}
+
+.output {
+  width: 100%;
+}
+
+.input {
+  min-width: 150px;
+  margin-left: 16px;
+}
+
+.input::after {
+  content: '';
+  padding: 0 5px;
+  border-left: 15px solid white;
+  display: inline;
+  animation-name: blink;
+  animation-iteration-count: infinite;
+  animation-duration: 1s;
+}
+
+@keyframes blink {
+  from {
+    background-color: white;
+  }
+  to {
+    background-color: rgb(56, 56, 56);;
+  }
+}
+
+.typewriter {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.typewriter h1 {
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: 0.15em solid orange; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: 0.15em; /* Adjust as needed */
+  animation: typing 1.2s steps(40, end), blink-caret 0.75s step-end infinite;
+  background-color: black;
+}
+
+/* The typing effect */
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: orange;
+  }
+}
+
+.css-typing p {
+  border-right: 0.15em solid orange;
+  font-family: "Courier";
+  font-size: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.css-typing p:nth-child(1) {
+  width: 7.3em;
+  -webkit-animation: type 2s steps(40, end);
+  animation: type 2s steps(40, end);
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+.css-typing p:nth-child(2) {
+  width: 11.5em;
+  opacity: 0;
+  -webkit-animation: type2 2s steps(40, end);
+  animation: type2 2s steps(40, end);
+  -webkit-animation-delay: 2s;
+  animation-delay: 2s;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+.css-typing p:nth-child(3) {
+  width: 7.3em;
+  opacity: 0;
+  -webkit-animation: type3 5s steps(20, end),
+    blink 0.5s step-end infinite alternate;
+  animation: type3 5s steps(20, end), blink 0.5s step-end infinite alternate;
+  -webkit-animation-delay: 4s;
+  animation-delay: 4s;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+@keyframes type {
+  0% {
+    width: 0;
+  }
+  99.9% {
+    border-right: 0.15em solid orange;
+  }
+  100% {
+    border: none;
+  }
+}
+
+@-webkit-keyframes type {
+  0% {
+    width: 0;
+  }
+  99.9% {
+    border-right: 0.15em solid orange;
+  }
+  100% {
+    border: none;
+  }
+}
+
+@keyframes type2 {
+  0% {
+    width: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  99.9% {
+    border-right: 0.15em solid orange;
+  }
+  100% {
+    opacity: 1;
+    border: none;
+  }
+}
+
+@-webkit-keyframes type2 {
+  0% {
+    width: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  99.9% {
+    border-right: 0.15em solid orange;
+  }
+  100% {
+    opacity: 1;
+    border: none;
+  }
+}
+
+@keyframes type3 {
+  0% {
+    width: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes type3 {
+  0% {
+    width: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+@-webkit-keyframes blink {
+  50% {
+    border-color: tranparent;
+  }
+}
+
+h1 {
+  color: black;
+  opacity: 1;
+}
