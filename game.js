@@ -173,7 +173,7 @@ class Fighter extends Humanoid {
 
           let duration = Math.floor(Math.random() * (this.weapons[weapon].statusMaxDuration - this.weapons[weapon].statusMinDuration + 1) + this.weapons[weapon].statusMinDuration);
 
-          opponent.setStatus(this.weapon.status,)
+          opponent.setStatus(this.weapons[weapon].status,duration);
 
         }
 
