@@ -126,7 +126,7 @@ class Hero extends Fighter {
 
     for (let i = 0; i < this.weapons.length; i++) {
 
-      console.log(`[${i}] ${this.weapons[i].name} (remaining uses: ${this.weapons[i].uses})`);
+      console.log(`[${i}] ${this.weapons[i].name} ${this.weapons[i].weaponType} (remaining uses: ${this.weapons[i].uses})`);
 
     }
 
@@ -150,11 +150,24 @@ class Hero extends Fighter {
     }
 
     console.log();
+    console.log(`they used thier ${this.weapons[chosenWeapon].name} ${this.weapons[chosenWeapon].weaponType}`);
 
     return opponent.takeDamage(damage);
 
   }
 
+}
+
+// weapon constructor function------------
+class Weapon{
+  constructor(obj){
+    this.name = obj.name;
+    this.maxDamage = obj.maxDamage;
+    this.minDamage = obj.minDamage;
+    this.weaponType = obj.weaponType;
+    this.weaponTier = obj.weaponTier;
+    this.uses = obj.uses;
+  }
 }
 
 /* ====================== GAME FUNCTIONS ============================ */
@@ -164,6 +177,7 @@ class Hero extends Fighter {
 function createCharacter() {
 
   const characterClasses = ["Elf", "Human", "Orc"];
+  const characterType = ["Swordsman", "Ranger", "wizard"]
 
   let heroName = readline.question("What will your hero's name be? ");
 
@@ -171,7 +185,7 @@ function createCharacter() {
   let heroFaction = "undefined";
   let heroLanguage = "undefined";
 
-  console.log(`\nThere are ${characterClasses.length} classes available to you as an adventurer.`);
+  console.log(`\nThere are ${characterClasses.length} Races available to you as an adventurer.`);
   console.log("You may choose one of the following:\n");
 
   for (let i = 0; i < characterClasses.length; i++) {
@@ -207,6 +221,64 @@ function createCharacter() {
 
   console.log(`Welcome to the ${heroFaction}, ${heroName}.\n`);
 
+//weapon choosing
+  let characterWeapon = -1;
+  let newWeapon = "undefined";
+  let heroClass = "underfined";
+  console.log(`\nThere are ${characterType.length} classes available to you as an adventurer.`);
+
+  for (let i = 0; i < characterType.length; i++) {
+
+    console.log(`[${i}]: ${characterType[i]}`);
+
+  }
+
+  while (characterWeapon == -1 || isNaN(characterWeapon) || characterWeapon > characterType.length - 1) {
+
+    characterWeapon = readline.question("\nWhich class do you choose? ");
+
+  }
+
+  characterWeapon = Number.parseInt(characterWeapon);
+
+  switch (characterWeapon) {
+
+    case 0: // Elf
+      heroClass = characterType[0];
+      newWeapon = new Weapon({
+        name: "Excalibur",
+        maxDamage: 75,
+        minDamage: 45,
+        weaponType: "Sword",
+        weaponTier: 0,
+        uses: 10,
+      });
+      break;
+    case 1:
+      heroClass = characterType[1];
+      newWeapon = new Weapon({
+        name: "Vampire Killer",
+        maxDamage: 75,
+        minDamage: 45,
+        weaponType: "CrossBow",
+        weaponTier: 0,
+        uses: 10,
+      });
+      break;
+    case 2:
+      heroClass = characterType[2];
+      newWeapon = new Weapon({
+        name: "Fire",
+        maxDamage: 75,
+        minDamage: 45,
+        weaponType: "Wand",
+        weaponTier: 0,
+        uses: 30,
+      });
+      break;
+
+  }
+
   return new Hero({
     createdAt: new Date(),
     dimensions: {
@@ -218,10 +290,18 @@ function createCharacter() {
     name: heroName,
     faction: heroFaction,
     weapons: [
-      {name: "Dagger", maxDamage: 20, uses: 25},
-      {name: "Sword", maxDamage: 75, uses: 5}
+      new Weapon({
+        name: "Piece o glass",
+        maxDamage: 10,
+        minDamage: 1,
+        weaponType: "Dagger",
+        weaponTier: 0,
+        uses: 10,
+      }),
+      newWeapon
     ],
     language: heroLanguage,
+    class: heroClass,
   });
 
 }
