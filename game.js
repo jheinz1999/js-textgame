@@ -98,10 +98,10 @@ class Fighter extends Humanoid {
     if (this.status == "POISONED") {
 
       let damage = Math.floor(Math.random() * 9 + 1);
-      console.log(`${this.name} took ${damage} damage due to poison.`);
+      io.output(`${this.name} took ${damage} damage due to poison.`);
 
       this.hp -= damage;
-      console.log(`${this.name}'s current HP: ${this.hp}`);
+      io.output(`${this.name}'s current HP: ${this.hp}`);
 
       this.statusTime--;
 
@@ -113,10 +113,10 @@ class Fighter extends Humanoid {
     if (this.status == "BLEEDING") {
 
       let damage = Math.floor(Math.random() * 9 + 1);
-      console.log(`${this.name} took ${damage} damage due to bleeding.`);
+      io.output(`${this.name} took ${damage} damage due to bleeding.`);
 
       this.hp -= damage;
-      console.log(`${this.name}'s current HP: ${this.hp}`);
+      io.output(`${this.name}'s current HP: ${this.hp}`);
 
       this.statusTime--;
 
@@ -128,10 +128,10 @@ class Fighter extends Humanoid {
     if (this.status == "BURNED") {
 
       let damage = Math.floor(Math.random() * 9 + 1);
-      console.log(`${this.name} took ${damage} damage due to a burn.`);
+      io.output(`${this.name} took ${damage} damage due to a burn.`);
 
       this.hp -= damage;
-      console.log(`${this.name}'s current HP: ${this.hp}`);
+      io.output(`${this.name}'s current HP: ${this.hp}`);
 
       this.statusTime--;
 
@@ -625,8 +625,30 @@ async function game() {
       name: 'Evil Villian',
       faction: 'Mountain Kingdom',
       weapons: [
-        {name: "Dagger", maxDamage: 20, uses: 25},
-        {name: "Sword", maxDamage: 30, uses: 2}
+        new Weapon({
+          name: "Piece o glass",
+          maxDamage: 10,
+          minDamage: 1,
+          weaponType: "Dagger",
+          weaponTier: 0,
+          uses: 10,
+          status: "BLEEDING",
+          statusChance: 15,
+          statusMinDuration: 1,
+          statusMaxDuration: 3
+        }),
+        new Weapon({
+          name: "Sword",
+          maxDamage: 10,
+          minDamage: 1,
+          weaponType: "Sword",
+          weaponTier: 0,
+          uses: 10,
+          status: "BLEEDING",
+          statusChance: 15,
+          statusMinDuration: 1,
+          statusMaxDuration: 3
+        })
       ],
       language: 'Pig Latin',
     });
