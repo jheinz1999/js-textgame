@@ -95,30 +95,40 @@ class Fighter extends Humanoid {
 
   takeDamage(damage) {
 
-    // If I am not afflicted with anything, then there is a 5% chance I will be stunned and a 10% chance I will be poisoned.
-
-    if (this.status == "NORMAL") {
-
-      const affliction = Math.floor(Math.random() * 100 + 1);
-
-      if (affliction < 5) {
-
-        this.setStatus("STUNNED", 1);
-
-      }
-
-      else if (affliction < 15) {
-
-        this.setStatus("POISONED", Math.floor(Math.random() * 4 + 1));
-
-      }
-
-    }
-
     if (this.status == "POISONED") {
 
       let damage = Math.floor(Math.random() * 9 + 1);
       console.log(`${this.name} took ${damage} damage due to poison.`);
+
+      this.hp -= damage;
+      console.log(`${this.name}'s current HP: ${this.hp}`);
+
+      this.statusTime--;
+
+      if (this.statusTime == 0)
+        this.status = "NORMAL";
+
+    }
+
+    if (this.status == "BLEEDING") {
+
+      let damage = Math.floor(Math.random() * 9 + 1);
+      console.log(`${this.name} took ${damage} damage due to bleeding.`);
+
+      this.hp -= damage;
+      console.log(`${this.name}'s current HP: ${this.hp}`);
+
+      this.statusTime--;
+
+      if (this.statusTime == 0)
+        this.status = "NORMAL";
+
+    }
+
+    if (this.status == "BURNED") {
+
+      let damage = Math.floor(Math.random() * 9 + 1);
+      console.log(`${this.name} took ${damage} damage due to a burn.`);
 
       this.hp -= damage;
       console.log(`${this.name}'s current HP: ${this.hp}`);
@@ -174,6 +184,8 @@ class Fighter extends Humanoid {
     "NORMAL": normal
     "STUNNED": cannot attack for n turns
     "POISONED": Takes damage a bit for n turns
+    "BURNED": Takes damage a bit for n turns
+    "BLEEDING": Takes damage a bit for n turns
 
     */
 
@@ -355,7 +367,7 @@ async function createCharacter() {
     let characterClass = -1;
     let heroFaction = "undefined";
     let heroLanguage = "undefined";
-    
+
     io.output(`\nThere are ${characterClasses.length} Races available to you as an adventurer.`);
     io.output("You may choose one of the following:\n");
 
@@ -450,7 +462,7 @@ async function createCharacter() {
       break;
 
   }
-    
+
 
     io.output(`Welcome to the ${heroFaction}, ${heroName} the ${heroClass}.\n`);
 
@@ -481,7 +493,7 @@ async function createCharacter() {
   })
 }
 
- 
+
 
 // Battle function. returns whether hero won or not.
 
