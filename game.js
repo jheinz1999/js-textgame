@@ -160,7 +160,24 @@ class Fighter extends Humanoid {
         damage = 1;
 
       }
+
       io.output(`${this.name} used his ${this.weapons[weapon].name}`);
+
+      // Apply status to opponent
+
+      if (this.weapons[weapon].status != "NONE") {
+
+        let chance = Math.floor(Math.random() * 100);
+
+        if (chance < this.weapons[weapon].statusChance) {
+
+          let duration = Math.floor(Math.random() * (this.weapons[weapon].statusMaxDuration - this.weapons[weapon].statusMinDuration + 1) + this.weapons[weapon].statusMinDuration);
+
+          opponent.setStatus(this.weapon.status,)
+
+        }
+
+      }
 
       return opponent.takeDamage(damage);
 
@@ -344,6 +361,10 @@ class Weapon{
     this.weaponType = obj.weaponType;
     this.weaponTier = obj.weaponTier;
     this.uses = obj.uses;
+    this.status = obj.status;
+    this.statusChance = obj.statusChance;
+    this.statusMinDuration = obj.statusMinDuration;
+    this.statusMaxDuration = obj.statusMaxDuration;
   }
 }
 
@@ -436,6 +457,10 @@ async function createCharacter() {
         weaponType: "Sword",
         weaponTier: 0,
         uses: 10,
+        status: "NONE",
+        statusChance: 0,
+        statusMinDuration: 1,
+        statusMaxDuration: 1
       });
       break;
     case 1:
@@ -447,6 +472,10 @@ async function createCharacter() {
         weaponType: "CrossBow",
         weaponTier: 0,
         uses: 10,
+        status: "POISONED",
+        statusChance: 10,
+        statusMinDuration: 1,
+        statusMaxDuration: 5
       });
       break;
     case 2:
@@ -458,6 +487,10 @@ async function createCharacter() {
         weaponType: "Wand",
         weaponTier: 0,
         uses: 30,
+        status: "BURNED",
+        statusChance: 10,
+        statusMinDuration: 1,
+        statusMaxDuration: 5
       });
       break;
 
@@ -484,6 +517,10 @@ async function createCharacter() {
               weaponType: "Dagger",
               weaponTier: 0,
               uses: 10,
+              status: "BLEEDING",
+              statusChance: 15,
+              statusMinDuration: 1,
+              statusMaxDuration: 3
             }),
             newWeapon
           ],
